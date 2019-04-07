@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>SpringCloud——Gateway配置大全 | 高家祺的博客</title>
+  <meta name="description" content="了解Gateway的配置才可以理解使用Gateway可以做什么事情，才能更好地应用在产品开发中。  Predicates Predicates主要起的作用是：配置路由匹配请求的规则  Http相关Path 配置对于请求路径的匹配规则   yml配置，多个参数用逗号隔开 1- Path = /aa/**,/bb/**  json配置 1&amp;#123;&quot;name&quot;:&quot;Path&quot;,&quot;args&quot;:&amp;#12">
+<meta name="keywords" content="SpringCloud,Gateway">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud——Gateway配置大全">
+<meta property="og:url" content="https://challange.github.io/springcloud-SpringCloud——Gateway配置大全/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="了解Gateway的配置才可以理解使用Gateway可以做什么事情，才能更好地应用在产品开发中。  Predicates Predicates主要起的作用是：配置路由匹配请求的规则  Http相关Path 配置对于请求路径的匹配规则   yml配置，多个参数用逗号隔开 1- Path = /aa/**,/bb/**  json配置 1&amp;#123;&quot;name&quot;:&quot;Path&quot;,&quot;args&quot;:&amp;#12">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-07T08:44:25.545Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud——Gateway配置大全">
+<meta name="twitter:description" content="了解Gateway的配置才可以理解使用Gateway可以做什么事情，才能更好地应用在产品开发中。  Predicates Predicates主要起的作用是：配置路由匹配请求的规则  Http相关Path 配置对于请求路径的匹配规则   yml配置，多个参数用逗号隔开 1- Path = /aa/**,/bb/**  json配置 1&amp;#123;&quot;name&quot;:&quot;Path&quot;,&quot;args&quot;:&amp;#12">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/springcloud-SpringCloud——Gateway配置大全/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Gateway/" style="font-size: 13.5px;">Gateway</a> <a href="/tags/Scratch/" style="font-size: 14px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-SpringCloud——Gateway配置大全/" class="title">SpringCloud——Gateway配置大全</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-04-07T08:36:59.000Z" itemprop="datePublished">2019-04-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（二）：Gateway网关对接注册中心/" class="title">从零开始玩转SpringCloud（二）：Gateway网关对接注册中心</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-04-07T06:54:30.000Z" itemprop="datePublished">2019-04-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（一）：Eureka注册中心/" class="title">从零开始玩转SpringCloud（一）：Eureka注册中心</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-04-07T06:50:20.000Z" itemprop="datePublished">2019-04-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Scratch/">Scratch</a>
+              </p>
+              <p class="item-title">
+                <a href="/scratch-Scratch3-0——项目层次结构/" class="title">Scratch3.0——项目层次结构</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-04-06T08:46:31.000Z" itemprop="datePublished">2019-04-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Scratch/">Scratch</a>
+              </p>
+              <p class="item-title">
+                <a href="/scratch-Scratch3-0——克隆代码仓库的正确姿势/" class="title">Scratch3.0——克隆代码仓库的正确姿势</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-04-06T08:46:31.000Z" itemprop="datePublished">2019-04-06</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-springcloud-SpringCloud——Gateway配置大全" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringCloud——Gateway配置大全
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/springcloud-SpringCloud——Gateway配置大全/" class="article-date">
+	  <time datetime="2019-04-07T08:36:59.000Z" itemprop="datePublished">2019-04-07</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Gateway/">Gateway</a>, <a class="article-tag-link" href="/tags/SpringCloud/">SpringCloud</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/springcloud-SpringCloud——Gateway配置大全/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.2k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 6(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <blockquote>
+<p>了解Gateway的配置才可以理解使用Gateway可以做什么事情，才能更好地应用在产品开发中。</p>
+</blockquote>
+<h3 id="Predicates"><a href="#Predicates" class="headerlink" title="Predicates"></a>Predicates</h3><blockquote>
+<p>Predicates主要起的作用是：配置路由匹配请求的规则</p>
+</blockquote>
+<h4 id="Http相关"><a href="#Http相关" class="headerlink" title="Http相关"></a>Http相关</h4><h5 id="Path"><a href="#Path" class="headerlink" title="Path"></a>Path</h5><blockquote>
+<p>配置对于请求路径的匹配规则</p>
+</blockquote>
+<ol>
+<li><p>yml配置，多个参数用逗号隔开</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Path</span> <span class="string">=</span> <span class="string">/aa/**,/bb/**</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Path"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"pattern"</span>:<span class="string">"/aa/**"</span>,<span class="attr">"pattern1"</span>:<span class="string">"/bb/**"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h5><blockquote>
+<p>配置对Cookie中值的匹配，第一个为key，第二个为value。下例匹配cookie设置chocolate:ch.p的请求</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Cookie</span> <span class="string">=</span> <span class="string">chocolate,ch.p</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Cookie"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"chocolate"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"ch.p"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h5><blockquote>
+<p>匹配Http请求中设置的内容，http-header设置X-Request-Id:\d+可以匹配，第二个参数第二个参数是正则表达式</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Header</span> <span class="string">=</span> <span class="string">X-Request-Id,\d+</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Header"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Request-Id"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"\d+"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Host"><a href="#Host" class="headerlink" title="Host"></a>Host</h5><blockquote>
+<p>匹配Http请求Host，匹配所有host为**.somehost.com的请求</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Host</span> <span class="string">=</span> <span class="string">**.somehost.com</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Host"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"**.somehost.com"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h5><blockquote>
+<p>匹配Http请求头</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Method</span> <span class="string">=</span> <span class="string">GET</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Method"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"GET"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Query"><a href="#Query" class="headerlink" title="Query"></a>Query</h5><blockquote>
+<p>匹配Http请求中的查询参数，请求中携带param1=value的请求可以匹配</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Query</span> <span class="string">=</span> <span class="string">param1,value</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Query"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"param1"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"value"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="RemoteAddr"><a href="#RemoteAddr" class="headerlink" title="RemoteAddr"></a>RemoteAddr</h5><blockquote>
+<p>匹配请求中的RemoteAddr</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RemoteAddr</span> <span class="string">=</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span><span class="string">/24</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RemoteAddr"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"192.168.1.1/24"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="时间相关"><a href="#时间相关" class="headerlink" title="时间相关"></a>时间相关</h4><h5 id="After"><a href="#After" class="headerlink" title="After"></a>After</h5><blockquote>
+<p>设置时间之后可以访问</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">After</span> <span class="string">=</span> <span class="number">2017</span><span class="bullet">-01</span><span class="bullet">-20</span><span class="attr">T17:42:47.789-07:00[America/Denver]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"After"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"2017-01-20T17:42:47.789-07:00[America/Denver]"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Before"><a href="#Before" class="headerlink" title="Before"></a>Before</h5><blockquote>
+<p>设置时间之前可以访问</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Before</span> <span class="string">=</span> <span class="number">2017</span><span class="bullet">-01</span><span class="bullet">-20</span><span class="attr">T17:42:47.789-07:00[America/Denver]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Before"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"2017-01-20T17:42:47.789-07:00[America/Denver]"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Before-1"><a href="#Before-1" class="headerlink" title="Before"></a>Before</h5><blockquote>
+<p>设置时间段内可以访问</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Between</span> <span class="string">=</span> <span class="number">2017</span><span class="bullet">-01</span><span class="bullet">-20</span><span class="attr">T17:42:47.789-07:00[America/Denver],2017-01-21T17:42:47.789-07:00[America/Denver]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Between"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"2017-01-20T17:42:47.789-07:00[America/Denver]"</span>，<span class="string">"_genkey_1"</span>:<span class="string">"2017-01-21T17:42:47.789-07:00[America/Denver]"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="权重路由"><a href="#权重路由" class="headerlink" title="权重路由"></a>权重路由</h4><blockquote>
+<p>至少两组以上路由可以配置权重路由，配置后会根据权重随机访问几个路由</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">Weight</span> <span class="string">=</span> <span class="string">service1,80</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Weight"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"service1"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"80"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="Filters"><a href="#Filters" class="headerlink" title="Filters"></a>Filters</h3><h4 id="路径重写"><a href="#路径重写" class="headerlink" title="路径重写"></a>路径重写</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RewritePath</span> <span class="string">=</span> <span class="string">/path/(?&lt;segment&gt;.*),</span> <span class="string">/$\&#123;segment&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RewritePath"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"/foo/(?&lt;segment&gt;.*)"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"/$\\&#123;segment&#125;"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="修改请求头"><a href="#修改请求头" class="headerlink" title="修改请求头"></a>修改请求头</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">AddRequestHeader</span> <span class="string">=</span> <span class="string">X-Request-Foo,Bar</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"AddRequestHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Request-Foo"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"Bar"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="修改请求参数"><a href="#修改请求参数" class="headerlink" title="修改请求参数"></a>修改请求参数</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">AddRequestParameter</span> <span class="string">=</span> <span class="string">foo,bar</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"AddRequestParameter"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"foo"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"bar"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="修改响应参数"><a href="#修改响应参数" class="headerlink" title="修改响应参数"></a>修改响应参数</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">AddResponseHeader</span> <span class="string">=</span> <span class="string">X-Request-Foo,Bar</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"AddResponseHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Request-Foo"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"Bar"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="路径前缀增强"><a href="#路径前缀增强" class="headerlink" title="路径前缀增强"></a>路径前缀增强</h4><blockquote>
+<p>请求路径/hello, 将会被替换为 /mypath/hello</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">PrefixPath</span> <span class="string">=</span> <span class="string">/mypath</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"PrefixPath"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"/mypath"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="路径前缀删除"><a href="#路径前缀删除" class="headerlink" title="路径前缀删除"></a>路径前缀删除</h4><blockquote>
+<p>请求/name/bar/foo，去除掉前面两个前缀之后，最后转发到目标服务的路径为/foo</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">StripPrefix</span> <span class="string">=</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"StripPrefix"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"2"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="请求携带保留原始Host"><a href="#请求携带保留原始Host" class="headerlink" title="请求携带保留原始Host"></a>请求携带保留原始Host</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">PreserveHostHeader</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"PreserveHostHeader"</span>,<span class="attr">"args"</span>:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RedirectTo</span> <span class="string">=</span> <span class="number">302</span><span class="string">,http://acme.org</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RedirectTo"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"302"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"http://acme.org"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="断路器"><a href="#断路器" class="headerlink" title="断路器"></a>断路器</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- name:</span> <span class="string">Hystrix</span></span><br><span class="line"><span class="attr">  args:</span></span><br><span class="line">	  <span class="comment"># 断路后跳转地址</span></span><br><span class="line">	  <span class="attr">name:</span> <span class="string">fallbackcmd</span></span><br><span class="line"><span class="attr">      fallbackUri:</span> <span class="attr">forward:/incaseoffailureusethis</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"Hystrix"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"name"</span>:<span class="string">"fallbackcmd"</span>,<span class="attr">"fallbackUri"</span>:<span class="string">"forward:/incaseoffailureusethis"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="集成Redis原生支持请求限流"><a href="#集成Redis原生支持请求限流" class="headerlink" title="集成Redis原生支持请求限流"></a>集成Redis原生支持请求限流</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- name:</span> <span class="string">RequestRateLimiter</span></span><br><span class="line"><span class="attr">  args:</span></span><br><span class="line">    <span class="string">redis-rate-limiter.replenishRate:</span> <span class="number">10</span>  </span><br><span class="line">    <span class="string">redis-rate-limiter.burstCapacity:</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RequestRateLimiter"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"redis-rate-limiter.replenishRate"</span>:<span class="string">"10"</span>,<span class="attr">"redis-rate-limiter.burstCapacity"</span>:<span class="string">"20"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="删除请求头属性"><a href="#删除请求头属性" class="headerlink" title="删除请求头属性"></a>删除请求头属性</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RemoveRequestHeader</span> <span class="string">=</span> <span class="string">X-Request-Foo</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RemoveRequestHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Request-Foo"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="删除响应头属性"><a href="#删除响应头属性" class="headerlink" title="删除响应头属性"></a>删除响应头属性</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RemoveResponseHeader</span> <span class="string">=</span> <span class="string">X-Request-Foo</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RemoveResponseHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Request-Foo"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="重写响应头"><a href="#重写响应头" class="headerlink" title="重写响应头"></a>重写响应头</h4><blockquote>
+<p>将请求 /42?user=ford&amp;password=omg!what&amp;flag=true, 改为 /42?user=ford&amp;password=***&amp;flag=true</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">RewriteResponseHeader</span> <span class="string">=</span> <span class="string">X-Response-Foo,password=[^&amp;]+,password=***</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RewriteResponseHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Response-Foo"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"password=[^&amp;]+"</span>,<span class="attr">"_genkey_2"</span>:<span class="string">"password=***"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="重设请求路径"><a href="#重设请求路径" class="headerlink" title="重设请求路径"></a>重设请求路径</h4><blockquote>
+<p>请求/foo/bar，在接下来的处理中被改为/bar</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">SetPath</span> <span class="string">=/&#123;segment&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"SetPath"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"/&#123;segment&#125;"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="设置响应头"><a href="#设置响应头" class="headerlink" title="设置响应头"></a>设置响应头</h4><blockquote>
+<p>在接下来的处理中修改响应头X-Response-Foo为Bar</p>
+</blockquote>
+<ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">SetResponseHeader</span> <span class="string">=X-Request-Foo,Bar</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"SetResponseHeader"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"X-Response-Foo"</span>,<span class="attr">"_genkey_1"</span>:<span class="string">"Bar"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="设置Http状态"><a href="#设置Http状态" class="headerlink" title="设置Http状态"></a>设置Http状态</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- name:</span> <span class="string">SetStatus</span></span><br><span class="line"><span class="attr">  args:</span></span><br><span class="line">	  <span class="attr">status:</span> <span class="number">401</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"SetStatus"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"302"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="设置文件传输大小"><a href="#设置文件传输大小" class="headerlink" title="设置文件传输大小"></a>设置文件传输大小</h4><ol>
+<li><p>yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- name:</span> <span class="string">RequestSize</span></span><br><span class="line"><span class="attr">  args:</span></span><br><span class="line"><span class="attr">   maxSize:</span> <span class="number">5000000</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>json配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"name"</span>:<span class="string">"RequestSize"</span>,<span class="attr">"args"</span>:&#123;<span class="attr">"_genkey_0"</span>:<span class="string">"5000000"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="失败重试"><a href="#失败重试" class="headerlink" title="失败重试"></a>失败重试</h4><ol>
+<li>yml配置<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- name:</span> <span class="string">Retry</span></span><br><span class="line"><span class="attr">  args:</span></span><br><span class="line">	  <span class="attr">retries:</span> <span class="number">3</span></span><br><span class="line"><span class="attr">      statuses:</span> <span class="string">BAD_GATEWAY</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/springcloud-SpringCloud——Gateway配置大全/" title="SpringCloud——Gateway配置大全" target="_blank" rel="external">https://challange.github.io/springcloud-SpringCloud——Gateway配置大全/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/springcloud-从零开始玩转SpringCloud（二）：Gateway网关对接注册中心/" title="从零开始玩转SpringCloud（二）：Gateway网关对接注册中心"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
