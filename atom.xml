@@ -106,6 +106,32 @@
   </entry>
   
   <entry>
+    <title>Scratch3.0——作品截图</title>
+    <link href="https://challange.github.io/scratch-Scratch3-0%E2%80%94%E2%80%94%E4%BD%9C%E5%93%81%E6%88%AA%E5%9B%BE/"/>
+    <id>https://challange.github.io/scratch-Scratch3-0——作品截图/</id>
+    <published>2019-04-06T08:46:31.000Z</published>
+    <updated>2019-04-07T08:56:35.339Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>Scratch 的舞台是基于canvas，最初尝试直接通过canvas的dom，然后生成图片，但最后只能得到一个黑色的图片，得到黑色图片的原因是没有取到有效的canvas而不是因为图片跨域，当初在这里走了很多弯路，继续研究舞台组件stage.jsx，从vm.renderer可以获取canvas，于是通过这个canvas对象生成图片，记得当时的效果是偶尔会得到有效图片，但是大部分时候依然是黑色的图片，原因稍后回解释。为了实现截图，当时又进一步研究了renderer的代码，最后找到了draw方法，通过多次尝试发现<strong>在draw方法的最后执行canvas对象生成图片可以获得舞台的有效图片</strong>。</p></blockquote><h4 id="最初的笨办法"><a href="#最初的笨办法" class="headerlink" title="最初的笨办法"></a>最初的笨办法</h4><p>在node_modules中找到scratch-render/src/RenderWebGL.js中的draw方法，也可以直接在dist中修改编译后的文件。顺便解释一下draw是对舞台进行了清理和重新绘制，而draw的频率非常频繁，因此不能直接通过canvas获取图片。在重绘后追加获取图片的toDataURL方法，考虑到需要在gui里面调用，此处采用了监听键盘事件来通信，接收到截图请求将舞台图片放在window.sessionStorage内存中，在需要使用的时候可以直接从sessionStorage获得。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">draw () &#123;</span><br><span class="line">       <span class="keyword">this</span>._doExitDrawRegion();</span><br><span class="line"><span class="comment">// 获取gl</span></span><br><span class="line">       <span class="keyword">const</span> gl = <span class="keyword">this</span>._gl;</span><br><span class="line"><span class="comment">// </span></span><br><span class="line">       twgl.bindFramebufferInfo(gl, <span class="literal">null</span>);</span><br><span class="line">       gl.viewport(<span class="number">0</span>, <span class="number">0</span>, gl.canvas.width, gl.canvas.height);</span><br><span class="line">       gl.clearColor.apply(gl, <span class="keyword">this</span>._backgroundColor);</span><br><span class="line">       gl.clear(gl.COLOR_BUFFER_BIT);</span><br><span class="line"><span class="comment">// 重新绘制</span></span><br><span class="line">       <span class="keyword">this</span>._drawThese(<span class="keyword">this</span>._drawList, ShaderManager.DRAW_MODE.default, <span class="keyword">this</span>._projection);</span><br><span class="line">       <span class="comment">// 增加如下代码</span></span><br><span class="line">       <span class="keyword">let</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">       img.src = gl.canvas.toDataURL(<span class="string">'image/png'</span>,<span class="number">0.7</span>)</span><br><span class="line">       <span class="built_in">document</span>.onkeydown = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">           <span class="keyword">if</span>(e.keyCode == <span class="number">16</span>)&#123;</span><br><span class="line">               <span class="built_in">window</span>.sessionStorage.setItem(<span class="string">"coverImg"</span>,img.src)</span><br><span class="line">               <span class="built_in">console</span>.log(<span class="string">'webGL'</span>)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p><h4 id="带来问题"><a href="#带来问题" class="headerlink" title="带来问题"></a>带来问题</h4><ol><li>直接修改node_modules依赖的内容，严重影响团队开发、项目部署，提升了项目维护的复杂度。</li><li>每次draw都会执行toDataURL方法，并且赋值，增大了系统开销。</li><li>通过事件映射，提升了项目的复杂度。</li></ol><h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>回归最初问题的本源，不能直接从canvas.toDataURL获得舞台截图的原因是执行toDataURL的时候可能正好draw在重绘。因此先截图前先draw然后获取图片。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.renderer.draw();</span><br><span class="line"><span class="keyword">const</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">img.src = <span class="keyword">this</span>.canvas.toDataURL(<span class="string">'image/png'</span>, <span class="number">0.7</span>);</span><br></pre></td></tr></table></figure></p><p>码猿Scratch学习平台：<a href="https://scratch.imayuan.com">https://scratch.imayuan.com</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;Scratch 的舞台是基于canvas，最初尝试直接通过canvas的dom，然后生成图片，但最后只能得到一个黑色的图片，得到黑色图片的原因是没有取到有效的canvas而不是因为图片跨域，当初在这里走了很多弯路，继续研究舞台组件stage.jsx
+      
+    
+    </summary>
+    
+      <category term="Scratch" scheme="https://challange.github.io/categories/Scratch/"/>
+    
+    
+      <category term="Scratch" scheme="https://challange.github.io/tags/Scratch/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Scratch3.0——项目层次结构</title>
     <link href="https://challange.github.io/scratch-Scratch3-0%E2%80%94%E2%80%94%E9%A1%B9%E7%9B%AE%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/"/>
     <id>https://challange.github.io/scratch-Scratch3-0——项目层次结构/</id>
@@ -146,32 +172,6 @@
       
         &lt;blockquote&gt;
 &lt;p&gt;对Scratch3.0进行二次开发，首先要在github上fock&lt;a href=&quot;https://github.com/LLK/scratch-gui.git&quot;&gt;官方代码&lt;/a&gt;，但是在自己开发的同时又要跟进官方的代码就要在git做如下配置。&lt;/
-      
-    
-    </summary>
-    
-      <category term="Scratch" scheme="https://challange.github.io/categories/Scratch/"/>
-    
-    
-      <category term="Scratch" scheme="https://challange.github.io/tags/Scratch/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Scratch3.0——作品截图</title>
-    <link href="https://challange.github.io/scratch-Scratch3-0%E2%80%94%E2%80%94%E4%BD%9C%E5%93%81%E6%88%AA%E5%9B%BE/"/>
-    <id>https://challange.github.io/scratch-Scratch3-0——作品截图/</id>
-    <published>2019-04-06T08:46:31.000Z</published>
-    <updated>2019-04-07T08:56:35.339Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>Scratch 的舞台是基于canvas，最初尝试直接通过canvas的dom，然后生成图片，但最后只能得到一个黑色的图片，得到黑色图片的原因是没有取到有效的canvas而不是因为图片跨域，当初在这里走了很多弯路，继续研究舞台组件stage.jsx，从vm.renderer可以获取canvas，于是通过这个canvas对象生成图片，记得当时的效果是偶尔会得到有效图片，但是大部分时候依然是黑色的图片，原因稍后回解释。为了实现截图，当时又进一步研究了renderer的代码，最后找到了draw方法，通过多次尝试发现<strong>在draw方法的最后执行canvas对象生成图片可以获得舞台的有效图片</strong>。</p></blockquote><h4 id="最初的笨办法"><a href="#最初的笨办法" class="headerlink" title="最初的笨办法"></a>最初的笨办法</h4><p>在node_modules中找到scratch-render/src/RenderWebGL.js中的draw方法，也可以直接在dist中修改编译后的文件。顺便解释一下draw是对舞台进行了清理和重新绘制，而draw的频率非常频繁，因此不能直接通过canvas获取图片。在重绘后追加获取图片的toDataURL方法，考虑到需要在gui里面调用，此处采用了监听键盘事件来通信，接收到截图请求将舞台图片放在window.sessionStorage内存中，在需要使用的时候可以直接从sessionStorage获得。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">draw () &#123;</span><br><span class="line">       <span class="keyword">this</span>._doExitDrawRegion();</span><br><span class="line"><span class="comment">// 获取gl</span></span><br><span class="line">       <span class="keyword">const</span> gl = <span class="keyword">this</span>._gl;</span><br><span class="line"><span class="comment">// </span></span><br><span class="line">       twgl.bindFramebufferInfo(gl, <span class="literal">null</span>);</span><br><span class="line">       gl.viewport(<span class="number">0</span>, <span class="number">0</span>, gl.canvas.width, gl.canvas.height);</span><br><span class="line">       gl.clearColor.apply(gl, <span class="keyword">this</span>._backgroundColor);</span><br><span class="line">       gl.clear(gl.COLOR_BUFFER_BIT);</span><br><span class="line"><span class="comment">// 重新绘制</span></span><br><span class="line">       <span class="keyword">this</span>._drawThese(<span class="keyword">this</span>._drawList, ShaderManager.DRAW_MODE.default, <span class="keyword">this</span>._projection);</span><br><span class="line">       <span class="comment">// 增加如下代码</span></span><br><span class="line">       <span class="keyword">let</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">       img.src = gl.canvas.toDataURL(<span class="string">'image/png'</span>,<span class="number">0.7</span>)</span><br><span class="line">       <span class="built_in">document</span>.onkeydown = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">           <span class="keyword">if</span>(e.keyCode == <span class="number">16</span>)&#123;</span><br><span class="line">               <span class="built_in">window</span>.sessionStorage.setItem(<span class="string">"coverImg"</span>,img.src)</span><br><span class="line">               <span class="built_in">console</span>.log(<span class="string">'webGL'</span>)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p><h4 id="带来问题"><a href="#带来问题" class="headerlink" title="带来问题"></a>带来问题</h4><ol><li>直接修改node_modules依赖的内容，严重影响团队开发、项目部署，提升了项目维护的复杂度。</li><li>每次draw都会执行toDataURL方法，并且赋值，增大了系统开销。</li><li>通过事件映射，提升了项目的复杂度。</li></ol><h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>回归最初问题的本源，不能直接从canvas.toDataURL获得舞台截图的原因是执行toDataURL的时候可能正好draw在重绘。因此先截图前先draw然后获取图片。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.renderer.draw();</span><br><span class="line"><span class="keyword">const</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">img.src = <span class="keyword">this</span>.canvas.toDataURL(<span class="string">'image/png'</span>, <span class="number">0.7</span>);</span><br></pre></td></tr></table></figure></p><p>码猿Scratch学习平台：<a href="https://scratch.imayuan.com">https://scratch.imayuan.com</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;blockquote&gt;
-&lt;p&gt;Scratch 的舞台是基于canvas，最初尝试直接通过canvas的dom，然后生成图片，但最后只能得到一个黑色的图片，得到黑色图片的原因是没有取到有效的canvas而不是因为图片跨域，当初在这里走了很多弯路，继续研究舞台组件stage.jsx
       
     
     </summary>
