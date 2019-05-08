@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>Git操作整理 | 高家祺的博客</title>
+  <meta name="description" content="基础操作查看全局配置信息1git config --list 设置全局配置信息1git config --global user.name &amp;quot;wwyz&amp;quot; 初始化本地仓库1git init 将文件加入git版本库1git add &amp;quot;文件名&amp;quot; 拉取代码1git clone &amp;quot;版本库地址&amp;quot; &amp;quot;目录名&amp;quot; 查看文件状态1git">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git操作整理">
+<meta property="og:url" content="https://challange.github.io/Git-GIt操作整理/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="基础操作查看全局配置信息1git config --list 设置全局配置信息1git config --global user.name &amp;quot;wwyz&amp;quot; 初始化本地仓库1git init 将文件加入git版本库1git add &amp;quot;文件名&amp;quot; 拉取代码1git clone &amp;quot;版本库地址&amp;quot; &amp;quot;目录名&amp;quot; 查看文件状态1git">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-08T16:24:18.164Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git操作整理">
+<meta name="twitter:description" content="基础操作查看全局配置信息1git config --list 设置全局配置信息1git config --global user.name &amp;quot;wwyz&amp;quot; 初始化本地仓库1git init 将文件加入git版本库1git add &amp;quot;文件名&amp;quot; 拉取代码1git clone &amp;quot;版本库地址&amp;quot; &amp;quot;目录名&amp;quot; 查看文件状态1git">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/Git-GIt操作整理/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-problem">
+          <a href="/problem">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">问题记录</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/DIY/" style="font-size: 13.33px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Gateway/" style="font-size: 13.67px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.33px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/Scratch/" style="font-size: 13.67px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/微服务/" style="font-size: 13px;">微服务</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Git/">Git</a>
+              </p>
+              <p class="item-title">
+                <a href="/Git-GIt操作整理/" class="title">Git操作整理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——泛型/" class="title">Java基础学习——泛型</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-SpringCloud——Gateway跨域配置/" class="title">SpringCloud——Gateway跨域配置</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-05T08:05:05.000Z" itemprop="datePublished">2019-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Git-GIt操作整理" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git操作整理
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Git-GIt操作整理/" class="article-date">
+	  <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Git/">Git</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Git-GIt操作整理/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.1k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 4(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h3><h4 id="查看全局配置信息"><a href="#查看全局配置信息" class="headerlink" title="查看全局配置信息"></a>查看全局配置信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --list</span><br></pre></td></tr></table></figure>
+<h4 id="设置全局配置信息"><a href="#设置全局配置信息" class="headerlink" title="设置全局配置信息"></a>设置全局配置信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;wwyz&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="初始化本地仓库"><a href="#初始化本地仓库" class="headerlink" title="初始化本地仓库"></a>初始化本地仓库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+<h4 id="将文件加入git版本库"><a href="#将文件加入git版本库" class="headerlink" title="将文件加入git版本库"></a>将文件加入git版本库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add &quot;文件名&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="拉取代码"><a href="#拉取代码" class="headerlink" title="拉取代码"></a>拉取代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone &quot;版本库地址&quot; &quot;目录名&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="查看文件状态"><a href="#查看文件状态" class="headerlink" title="查看文件状态"></a>查看文件状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
+<h4 id="提交代码"><a href="#提交代码" class="headerlink" title="提交代码"></a>提交代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit &quot;说明&quot;</span><br><span class="line">git commit --amend # 重新提交</span><br></pre></td></tr></table></figure>
+<h4 id="移除文件-移除后文件不在被版本控制"><a href="#移除文件-移除后文件不在被版本控制" class="headerlink" title="移除文件,移除后文件不在被版本控制"></a>移除文件,移除后文件不在被版本控制</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git rm</span><br><span class="line">git rm --cached readme.txt #缓存中移除</span><br></pre></td></tr></table></figure>
+<h4 id="移动文件"><a href="#移动文件" class="headerlink" title="移动文件"></a>移动文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mv &quot;文件路径&quot; &quot;目标文件路径&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="查看提交文件历史"><a href="#查看提交文件历史" class="headerlink" title="查看提交文件历史"></a>查看提交文件历史</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br><span class="line">git log -p -2 #-p选项展开显示每次提交的内容差异，用-2则仅显示最近的两次更新</span><br></pre></td></tr></table></figure>
+<h4 id="查看远程仓库"><a href="#查看远程仓库" class="headerlink" title="查看远程仓库"></a>查看远程仓库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br><span class="line"># 添加远程仓库</span><br><span class="line">git remote add pb git://github.com/paulboone/ticgit.git</span><br><span class="line"># 拉取远程代码更新</span><br><span class="line">git fetch pb</span><br><span class="line"># 查看远程仓库的信息</span><br><span class="line">git remote show origin</span><br></pre></td></tr></table></figure>
+<h4 id="推送提交的代码"><a href="#推送提交的代码" class="headerlink" title="推送提交的代码"></a>推送提交的代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<h4 id="忽略文件"><a href="#忽略文件" class="headerlink" title="忽略文件"></a>忽略文件</h4><blockquote>
+<p>通过在项目根目录配置.gitignore文件忽略要忽略的文件/文件夹。<br>Java项目一般忽略：.idea、target、out、classes<br>前端项目一般忽略：.idea、node_modules、dist<br> .gitignore 格式规范如下：</p>
+<ol>
+<li>所有空行或者以注释符号 ＃ 开头的行都会被 Git 忽略。</li>
+<li>可以使用标准的 glob(shell 所使用的简化了的正则表达式)模式匹配。</li>
+<li>匹配模式最后跟反斜杠（/）说明要忽略的是目录。</li>
+<li>要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。</li>
+</ol>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*.[oa]  # 忽略所有以 .o 或 .a 结尾的文件</span><br><span class="line">*~      # 忽略所有以波浪符（~）结尾的文件</span><br></pre></td></tr></table></figure>
+<h4 id="Tag打标签"><a href="#Tag打标签" class="headerlink" title="Tag打标签"></a>Tag打标签</h4><blockquote>
+<p>对某一时间点上的版本打上标签，通常结合版本使用。Git 使用的标签有两种类型：轻量级的（lightweight）和含附注的（annotated）。轻量级标签就像是个不会变化的分支，实际上它就是个指向特定提交对象的引用。而含附注标签，实际上是存储在仓库中的一个独立对象，它有自身的校验和信息，包含着标签的名字，电子邮件地址和日期，以及标签说明，标签本身也允许使用 GNU Privacy Guard (GPG) 来签署或验证。一般我们都建议使用含附注型的标签，以便保留相关信息；当然，如果只是临时性加注标签，或者不需要旁注额外信息，用轻量级标签也没问题。</p>
+</blockquote>
+<h5 id="列出已有标签"><a href="#列出已有标签" class="headerlink" title="列出已有标签"></a>列出已有标签</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
+<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><blockquote>
+<p>使用分支意味着你可以从开发主线上分离开来，然后在不影响主线的同时继续工作。在很多版本控制系统中，这是个昂贵的过程，常常需要创建一个源代码目录的完整副本，对大型项目来说会花费很长时间。有人把 Git 的分支模型称为“必杀技特性”，而正是因为它，将 Git 从版本控制系统家族里区分出来。Git 有何特别之处呢？Git 的分支可谓是难以置信的轻量级，它的新建操作几乎可以在瞬间完成，并且在不同分支间切换起来也差不多一样快。</p>
+</blockquote>
+<h4 id="什么是分支"><a href="#什么是分支" class="headerlink" title="什么是分支"></a>什么是分支</h4><blockquote>
+<p>在 Git 中提交时，会保存一个提交（commit）对象，该对象包含一个指向暂存内容快照的指针，包含本次提交的作者等相关附属信息，包含零个或多个指向该提交对象的父对象指针：首次提交是没有直接祖先的，普通提交有一个祖先，由两个或多个分支合并产生的提交则有多个祖先。</p>
+</blockquote>
+<h4 id="新建分支"><a href="#新建分支" class="headerlink" title="新建分支"></a>新建分支</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch &quot;分支名&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a>切换分支</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &quot;分支名&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="合并分支"><a href="#合并分支" class="headerlink" title="合并分支"></a>合并分支</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将其他分支合并到本分支</span><br><span class="line">git merge &quot;分支名&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="分支变基"><a href="#分支变基" class="headerlink" title="分支变基"></a>分支变基</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git rebase</span><br><span class="line">#  将多次提交合并为一次提交，-i表示弹出交互式的界面让用户编辑完成合并操作</span><br><span class="line">git rebase -i  &quot;开始提交点&quot; &quot;结束提交点&quot;</span><br><span class="line"># 将某一段commit粘贴到另一个分支上</span><br><span class="line">git rebase &quot;开始提交点&quot; &quot;结束提交点&quot;  --onto &quot;分支名称&quot;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="Git官方文档"><a href="#Git官方文档" class="headerlink" title="Git官方文档"></a><a href="https://git-scm.com/book/zh/v2">Git官方文档</a></h4><h4 id="Git教程-廖雪峰"><a href="#Git教程-廖雪峰" class="headerlink" title="Git教程-廖雪峰"></a><a href="https://www.liaoxuefeng.com/wiki/896043488029600">Git教程-廖雪峰</a></h4>
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/Git-GIt操作整理/" title="Git操作整理" target="_blank" rel="external">https://challange.github.io/Git-GIt操作整理/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/微服务-云原生时代下的12-Factor应用原则/" title="云原生时代下的12-Factor应用原则"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/DIY-DIY——泛型/" title="Java基础学习——泛型"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

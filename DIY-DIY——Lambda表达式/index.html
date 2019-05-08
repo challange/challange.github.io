@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>Java基础学习——Lambda表达式 | 高家祺的博客</title>
+  <meta name="description" content="函数式编程是什么 函数式编程，是一种使用函数进行编程的方式，一个“函数”对应于一个数学函数:它接受零个或多个参数，生成一个或多个结果，并且不会有任何副作用，函数式函数无论在何处、何时、何地对于同样的输入总会返回相同的结果。  一、函数式编程优劣势对比匿名类与Lambda表达式代码简洁，相较于匿名内部类，Lambda表达式大大简化了代码量,代码可读性也会更好123456Runnable r1 = n">
+<meta name="keywords" content="DIY,Lambda表达式,Java基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础学习——Lambda表达式">
+<meta property="og:url" content="https://challange.github.io/DIY-DIY——Lambda表达式/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="函数式编程是什么 函数式编程，是一种使用函数进行编程的方式，一个“函数”对应于一个数学函数:它接受零个或多个参数，生成一个或多个结果，并且不会有任何副作用，函数式函数无论在何处、何时、何地对于同样的输入总会返回相同的结果。  一、函数式编程优劣势对比匿名类与Lambda表达式代码简洁，相较于匿名内部类，Lambda表达式大大简化了代码量,代码可读性也会更好123456Runnable r1 = n">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://challange.github.io/images/DIY——Lambda表达式/1.png">
+<meta property="og:image" content="https://challange.github.io/images/DIY——Lambda表达式/2.png">
+<meta property="og:image" content="https://challange.github.io/images/DIY——Lambda表达式/3.png">
+<meta property="og:image" content="https://challange.github.io/images/DIY——Lambda表达式/4.png">
+<meta property="og:updated_time" content="2019-05-08T16:09:30.086Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础学习——Lambda表达式">
+<meta name="twitter:description" content="函数式编程是什么 函数式编程，是一种使用函数进行编程的方式，一个“函数”对应于一个数学函数:它接受零个或多个参数，生成一个或多个结果，并且不会有任何副作用，函数式函数无论在何处、何时、何地对于同样的输入总会返回相同的结果。  一、函数式编程优劣势对比匿名类与Lambda表达式代码简洁，相较于匿名内部类，Lambda表达式大大简化了代码量,代码可读性也会更好123456Runnable r1 = n">
+<meta name="twitter:image" content="https://challange.github.io/images/DIY——Lambda表达式/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/DIY-DIY——Lambda表达式/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-problem">
+          <a href="/problem">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">问题记录</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/DIY/" style="font-size: 13.33px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Gateway/" style="font-size: 13.67px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.33px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/Scratch/" style="font-size: 13.67px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/微服务/" style="font-size: 13px;">微服务</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Git/">Git</a>
+              </p>
+              <p class="item-title">
+                <a href="/Git-GIt操作整理/" class="title">Git操作整理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——泛型/" class="title">Java基础学习——泛型</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-SpringCloud——Gateway跨域配置/" class="title">SpringCloud——Gateway跨域配置</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-05T08:05:05.000Z" itemprop="datePublished">2019-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-DIY-DIY——Lambda表达式" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java基础学习——Lambda表达式
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/DIY-DIY——Lambda表达式/" class="article-date">
+	  <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java基础/">Java基础</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/DIY/">DIY</a>, <a class="article-tag-link" href="/tags/Java基础/">Java基础</a>, <a class="article-tag-link" href="/tags/Lambda表达式/">Lambda表达式</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/DIY-DIY——Lambda表达式/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.6k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="函数式编程是什么"><a href="#函数式编程是什么" class="headerlink" title="函数式编程是什么"></a>函数式编程是什么</h3><blockquote>
+<p>函数式编程，是一种使用函数进行编程的方式，一个“函数”对应于一个数学函数:它接受零个或多个参数，生成一个或多个结果，并且不会有任何副作用，函数式函数无论在何处、何时、何地对于同样的输入总会返回相同的结果。</p>
+</blockquote>
+<h3 id="一、函数式编程优劣势对比"><a href="#一、函数式编程优劣势对比" class="headerlink" title="一、函数式编程优劣势对比"></a>一、函数式编程优劣势对比</h3><h4 id="匿名类与Lambda表达式"><a href="#匿名类与Lambda表达式" class="headerlink" title="匿名类与Lambda表达式"></a>匿名类与Lambda表达式</h4><p>代码简洁，相较于匿名内部类，Lambda表达式大大简化了代码量,代码可读性也会更好<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Runnable r1 = <span class="keyword">new</span> Runnable()&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Hello"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">Runnable r2 = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure></p>
+<p><strong>局限</strong>：</p>
+<ol>
+<li>匿名类与lambda表达式中的this和super含义是不同的，在匿名类中，this代表自身，而lambda代表的是包含类。</li>
+<li><p>匿名类可以屏蔽包含类的变量，而lambda不能，但是与包含类使用相同的变量，变量就容易产生歧义，难于理解。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">Runnable r1 = () -&gt; &#123;</span><br><span class="line">//   int a = 10;  // 编译错误</span><br><span class="line">     int a1 = 10;</span><br><span class="line">     System.out.println(a1);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在涉及重载的方法，Lambda表达式可能会导致模棱两可，但可以通过强制类型转换来解决。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Task</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(Runnable r)</span></span>&#123;</span><br><span class="line">    r.run();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(Task r)</span></span>&#123;</span><br><span class="line">    r.execute();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Error:(19, 9) java: 对doSomething的引用不明确</span></span><br><span class="line">	<span class="comment">// doSomething(() -&gt; System.out.println("1234"));</span></span><br><span class="line">    doSomething((Task) () -&gt; System.out.println(<span class="string">"1234"</span>));</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="行为参数化"><a href="#行为参数化" class="headerlink" title="行为参数化"></a>行为参数化</h4><p><strong>Lambda表达式引入了将方法作为参数传递的能力</strong>，在环绕场景下（一个方法只有中间部分逻辑不一样），增加了方法的复用，减少代码冗余。结合泛型理解，泛型使类或方法可以复用于更多的变量类型， 而函数式则进一步拓展了方法的复用性。<br><strong>局限</strong>：</p>
+<ol>
+<li>提供行为参数化后，如果行为较为复杂，则很难一眼看出行为的含义，这时候就会降低代码的可读性，相较而言，命名规范的函数则有见名知意的好处。</li>
+</ol>
+<h4 id="无副作用纯函数，引用透明"><a href="#无副作用纯函数，引用透明" class="headerlink" title="无副作用纯函数，引用透明"></a>无副作用纯函数，引用透明</h4><p>所谓共享数据就是数据可能被多个方法读取更新，在并发使用数据的时候必须通过上锁来确保线程安全。函数式编程所倡导的避免共享可变数据，只要参数确定就一定会返回确定结果，增加程序的可控性，不用考虑复杂易错的锁机制，使并行更加容易，充分利用计算机多核优势。</p>
+<p><img src="/images/DIY——Lambda表达式/1.png" alt="Alt text"><br>为了维持不可变性，“函数式”的函数或者方法都只能修改本地变量，并且它引用的对象都应是不可变对象.。</p>
+<p><strong>局限</strong>：</p>
+<ol>
+<li>为了确保避免共享可变数据引入——增加定义变量与赋值——增大了空间的使用</li>
+</ol>
+<h4 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h4><p>函数式要求函数或者方法不应抛出任何异常，因为一旦抛出异常，结果就被终止了；类比于数学函数，传入一个<strong>合法</strong>的参数，一定会返回一个确定的结果。在不使用异常的情况下，Java8引入了Optional&lt; T&gt;类型来承载异常情况，如果异常不能返回结果则返回一个空的optional对象。</p>
+<h4 id="声明式编程"><a href="#声明式编程" class="headerlink" title="声明式编程"></a>声明式编程</h4><p>经典的面向对象编程我们专注于<strong>如何实现</strong>，思维模式为：“首先做这个，紧接着更新那个，然后……”，面向对象是抽象对象、对象之间的交互；而函数式编程更关注与<strong>要做什么</strong>，Stream流是典型的应用，采用这种“要做什么”风格的编程就是声明式编程，编程者考虑的是指定规则，而由系统或者封装来觉得如何实现这个目标。这样带来的好处是<strong>让代码更加接近于问题陈述</strong>。</p>
+<p>习惯于声明式编程思维，我们可以更容易的利用化归思想，将复杂问题拆分为若干小问题逐步解决，自顶向下，开始更加关注于函数的输入以及输出结果，而不是过早的考虑如何做、修改哪些东西。</p>
+<h4 id="高阶函数与科里化"><a href="#高阶函数与科里化" class="headerlink" title="高阶函数与科里化"></a>高阶函数与科里化</h4><p>满足接受一个或多个函数作为参数或返回结果是一个函数的函数都是高阶函数，高阶函数提供了链式调用的功能。</p>
+<p>科里化是一种将具备2个参数（比如，x和y）的函数f转化为使用一个参数的函数g，并且这个函数的返回值也是一个函数，它可以作为新的函数的一个参数。后者返回值与初始函数返回值，f(x,y)=(g(x))y</p>
+<p>高阶函数与科里化也使声明式编程可以更加运用自如。</p>
+<h4 id="延迟计算与惰性求值"><a href="#延迟计算与惰性求值" class="headerlink" title="延迟计算与惰性求值"></a>延迟计算与惰性求值</h4><p>延迟计算以Stream为例，向Stream发起的一系列中间操作会先被一一保存起来，直到发起一个终端操作（Stream分为中间操作和中端操作，中间操作返回一个Stream，终端操作从流水线生成结果），才会进行实际的计算。延迟计算与惰性求值使得代码具备了巨大的优化潜能。支持惰性求值的编译器会像数学家看待代数表达式那样看待函数式程序:抵消相同项从而避免执行无谓的代码，优化代码的执行顺序从而实现更高的执行效率甚至是减少错误。<br>局限</p>
+<ol>
+<li>惰性求值最大的问题还是惰性，现实世界中很多问题还是需要严格求值的，需要严格的顺序执行，如System.nextLine()每次会读取下一行记录</li>
+<li></li>
+</ol>
+<h4 id="测试与调试"><a href="#测试与调试" class="headerlink" title="测试与调试"></a>测试与调试</h4><blockquote>
+<p>许多同学提到函数式程序难调试，个人觉得并不是因为难调试，而是我们要掌握调试的方法和工具</p>
+</blockquote>
+<ol>
+<li><strong>单元测试</strong>：因为函数式程序无副作用的特性使得单元测试更加容易，唯一需要做的就是传递一些可以代表边界条件的参数给这些函数并返回确定的结果，并且不会受其他因素干扰，如调用顺序、外部状态干扰等。<br>Lambda没有函数名，的确带来了测试困难，这时可以借助某个字段访问Lambda函数来测试函数内封装的逻辑，可能又会问每个表达式定义一个变量做测试也太麻烦了，从声明式编程的角度出发，我们应该关注的是一个方法的可靠性，每个lambda仅仅是函数的实现细节，当放在函数内整体测试。</li>
+<li><strong>Java Stream Debugger</strong><br>工欲善其事必先利其器，推荐个调试插件<strong>Java Stream Debugger</strong>，可以以可视化的形式展现stream筛选过滤的过程。<br><img src="/images/DIY——Lambda表达式/2.png" alt="Alt text"></li>
+<li><strong>日志输出</strong><br>使用peek方法可以在stream输Alt text出当前执行的元素，便于判断问题。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;People&gt; list = peopleList.stream()</span><br><span class="line">            .peek(x -&gt; System.out.println(<span class="string">"frist:"</span>+x))</span><br><span class="line">            .filter(item -&gt; item != <span class="keyword">null</span>)</span><br><span class="line">            .peek(x -&gt; System.out.println(<span class="string">"second:"</span>+x))</span><br><span class="line">            .filter(item -&gt; item.getAge() &gt; <span class="number">5</span>)</span><br><span class="line">            .peek(x -&gt; System.out.println(<span class="string">"three:"</span>+x))</span><br><span class="line">            .collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h4><ol>
+<li>在Java7引入了InvokeDynamic指令，用于支持在JVM上运行动态类型语言，Lambda表达式使用InvokeDynamic指令使表达式转化为字节码推迟到了<strong>运行时</strong>，避免了静态初始化，生成大量的匿名类，由此带来的问题，函数首次运行需要先进行编译，也就造成首次运行可能会占用较长时间，因此需要注意预热。</li>
+<li>包装类型转换往往不易发现，需要重点关注</li>
+<li>总的来说lambda不会对程序性能带来提升，甚至有可能性能下降，但是我们还是得拥抱它，因为它在多核并行计算、代码可读性、可拓展行上的优势足以抵消它降低的性能。</li>
+</ol>
+<h4 id="其他问题："><a href="#其他问题：" class="headerlink" title="其他问题："></a>其他问题：</h4><ol>
+<li>增加了使用门槛，但是工欲善其事必先利其器，作为一个合格Java程序猿本身就应具备持续的学习能力</li>
+</ol>
+<h3 id="二、Stream流的哪一个方法最有价值，为什么？"><a href="#二、Stream流的哪一个方法最有价值，为什么？" class="headerlink" title="二、Stream流的哪一个方法最有价值，为什么？"></a>二、Stream流的哪一个方法最有价值，为什么？</h3><blockquote>
+<p>同学们为自己心目中最有价值的Stream流方法进行了投票，投票结果来看最受欢迎的三个方法是filter、map、collect，filter主要因为可以进行条件过滤，map方法则可以映射每个元素生成新的元素，collect则是最后收集元素必不可少的一环，这三个方法无疑是Stream流操作最常用的方法。</p>
+</blockquote>
+<p><img src="/images/DIY——Lambda表达式/3.png" alt="Alt text"></p>
+<p>简单讲一下流的定义：<strong>从支持数据处理的源生成的元素序列</strong>。</p>
+<blockquote>
+<ul>
+<li><strong>元素序列</strong>——流提供了可以访问特定元素类型的一组有序值的接口。流的目的在于表达计算，比如前面见到的 filter、sorted和map。</li>
+<li><strong>源</strong>——流会使用一个提供数据的源，如集合、数组或输入/输出资源。</li>
+<li><strong>数据处理操作</strong>——流的数据处理功能支持类似于数据库的操作，以及函数式编程语言中 的常用操作，如filter、map、reduce、find、match、sort等。流操作可以顺序执行，也可并行执行。</li>
+</ul>
+</blockquote>
+<p>流的另外两个特点</p>
+<blockquote>
+<ul>
+<li><strong>流水线</strong>——很多流操作本身会返回一个流，这样多个操作就可以链接起来，形成一个大<br>的流水线。流水线背后其实是一种建造者模式</li>
+<li><strong>内部迭代</strong>——与使用迭代器显式迭代的集合不同，流的迭代操作是在背后进行的。</li>
+</ul>
+</blockquote>
+<p>流的使用一般包括三件事:</p>
+<blockquote>
+<ul>
+<li>一个数据源(如集合)来执行一个查询;</li>
+<li>一个中间操作链，形成一条流的流水线;</li>
+<li>一个终端操作，执行流水线，并能生成结果。</li>
+</ul>
+</blockquote>
+<p><strong>parallelStream与parallel区别</strong>：<br>parallelStream是Collection接口定义的方法，在stream构造时传入参数使用parallel生成并行流。parallel是BaseStream的一个方法，能够将一个顺序流转化为一个并行流，因此在执行parallel前可以以顺序流先进行预处理。<br>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static long parallelSum(long n) &#123;</span><br><span class="line">        return Stream.iterate(1L, i -&gt; i + 1)</span><br><span class="line">                     .limit(n)</span><br><span class="line">                     .parallel()      // 转化为并行流</span><br><span class="line">                     .reduce(0L, Long::sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Stream流方法的使用<img src="/images/DIY——Lambda表达式/4.png" alt="Alt text"></p>
+<p>参考文章：<br><a href="https://www.kancloud.cn/kancloud/functional-programm-for-rest/56930">傻瓜函数式编程</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/DIY-DIY——Lambda表达式/" title="Java基础学习——Lambda表达式" target="_blank" rel="external">https://challange.github.io/DIY-DIY——Lambda表达式/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/DIY-DIY——泛型/" title="Java基础学习——泛型"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/springcloud-SpringCloud——Gateway跨域配置/" title="SpringCloud——Gateway跨域配置"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
