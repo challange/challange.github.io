@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>SpringMvc项目接入SpringCloud微服务的解决方案 | 高家祺的博客</title>
+  <meta name="description" content="在SpringBoot项目大行其道的时代，仍有很多项目是基于SpringMvc，甚至是基于struts的，这些项目的特点是年代久远，项目庞大，设计文档存在缺漏。但是对于这些项目，我们不能放任不管，甚至很多项目还在为公司创造这价值。随着公司业务的发展，原先的单体项目已经不能满足快速发展变化的业务的需求，这时候就要进行微服务改造。  方案一：Sidecar异构接入 Sidecar项目可以看作老项目的">
+<meta name="keywords" content="微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMvc项目接入SpringCloud微服务的解决方案">
+<meta property="og:url" content="https://challange.github.io/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="在SpringBoot项目大行其道的时代，仍有很多项目是基于SpringMvc，甚至是基于struts的，这些项目的特点是年代久远，项目庞大，设计文档存在缺漏。但是对于这些项目，我们不能放任不管，甚至很多项目还在为公司创造这价值。随着公司业务的发展，原先的单体项目已经不能满足快速发展变化的业务的需求，这时候就要进行微服务改造。  方案一：Sidecar异构接入 Sidecar项目可以看作老项目的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://challange.github.io/images/SpringMvc项目接入SpringCloud微服务的解决方案/1.png">
+<meta property="og:updated_time" content="2019-05-26T07:07:08.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringMvc项目接入SpringCloud微服务的解决方案">
+<meta name="twitter:description" content="在SpringBoot项目大行其道的时代，仍有很多项目是基于SpringMvc，甚至是基于struts的，这些项目的特点是年代久远，项目庞大，设计文档存在缺漏。但是对于这些项目，我们不能放任不管，甚至很多项目还在为公司创造这价值。随着公司业务的发展，原先的单体项目已经不能满足快速发展变化的业务的需求，这时候就要进行微服务改造。  方案一：Sidecar异构接入 Sidecar项目可以看作老项目的">
+<meta name="twitter:image" content="https://challange.github.io/images/SpringMvc项目接入SpringCloud微服务的解决方案/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-problem">
+          <a href="/problem">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">问题记录</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/程序人生/">程序人生</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/DIY/" style="font-size: 13.25px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13.5px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.5px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/SQL调优/" style="font-size: 13px;">SQL调优</a> <a href="/tags/Scratch/" style="font-size: 13.75px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/分布式事务/" style="font-size: 13px;">分布式事务</a> <a href="/tags/前端/" style="font-size: 13px;">前端</a> <a href="/tags/微服务/" style="font-size: 13.5px;">微服务</a> <a href="/tags/数据库/" style="font-size: 13px;">数据库</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a> <a href="/tags/程序人生/" style="font-size: 13px;">程序人生</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" class="title">SpringMvc项目接入SpringCloud微服务的解决方案</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T08:05:05.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（三）：Feign声明式服务调用/" class="title">从零开始玩转SpringCloud（三）：Feign声明式服务调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T04:00:30.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Git/">Git</a>
+              </p>
+              <p class="item-title">
+                <a href="/Git-GIt操作整理/" class="title">Git操作整理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-微服务-SpringMvc项目接入SpringCloud微服务的解决方案" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringMvc项目接入SpringCloud微服务的解决方案
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" class="article-date">
+	  <time datetime="2019-05-26T08:05:05.000Z" itemprop="datePublished">2019-05-26</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/微服务/">微服务</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/微服务/">微服务</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 4(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <blockquote>
+<p>在SpringBoot项目大行其道的时代，仍有很多项目是基于SpringMvc，甚至是基于struts的，这些项目的特点是<strong>年代久远，项目庞大，设计文档存在缺漏</strong>。但是对于这些项目，我们不能放任不管，甚至很多项目还在为公司创造这价值。<br>随着公司业务的发展，原先的单体项目已经不能满足快速发展变化的业务的需求，这时候就要进行微服务改造。</p>
+</blockquote>
+<h3 id="方案一：Sidecar异构接入"><a href="#方案一：Sidecar异构接入" class="headerlink" title="方案一：Sidecar异构接入"></a>方案一：Sidecar异构接入</h3><p><img src="/images/SpringMvc项目接入SpringCloud微服务的解决方案/1.png" alt="Sidecar异构架构"></p>
+<p>Sidecar项目可以看作老项目的影子项目，由Sidecar负责接入注册中心，并且发起远程调用和被远程调用。两个项目为一个整体对外提供服务。</p>
+<h4 id="优势："><a href="#优势：" class="headerlink" title="优势："></a>优势：</h4><ol>
+<li>sidecar可以无视语言，可以用于代理古老的java项目，也可以异构代理其他语言项目，如php、python、nodejs等</li>
+<li>sidecar可以在不对老项目进行大规模改造的情况下快速接入SpringCloud微服务，渐进式的做微服务拆分</li>
+</ol>
+<h4 id="劣势"><a href="#劣势" class="headerlink" title="劣势"></a>劣势</h4><ol>
+<li>增加项目架构和维护的复杂度，多一个项目多一个环境意味着出问题的概率又多一分</li>
+</ol>
+<h4 id="Sidecar项目配置"><a href="#Sidecar项目配置" class="headerlink" title="Sidecar项目配置"></a>Sidecar项目配置</h4><ol>
+<li><p>老项目添加HealthController</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Usage</span>: 用于健康检查</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HealthController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/openapi/health/status"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map <span class="title">status</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">1</span>);</span><br><span class="line">        map.put(<span class="string">"status"</span>,<span class="string">"UP"</span>);</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建sidecar maven项目</p>
+</li>
+<li><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- sidecar 依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-netflix-sidecar<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- eureka 注册中心--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- hystrix 熔断--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- feign 声明式服务调用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-openfeign<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>项目启动类加入如下注解</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableFeignClients</span></span><br><span class="line"><span class="meta">@EnableSidecar</span></span><br></pre></td></tr></table></figure>
+<p>不用@EnableEurekaClient，因为@EnableSidecar中包含来eureka的注册逻辑</p>
+<ol start="5">
+<li>配置文件增加sidecar、eureka、feign、hystrix、ribbon配置<br>重点讲一下sidecar配置<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sidecar:</span></span><br><span class="line"><span class="comment"># 配置接入web的端口</span></span><br><span class="line"><span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">home-page-uri:</span> <span class="attr">http://localhost:$&#123;sidecar.port&#125;/</span></span><br><span class="line"><span class="comment"># 配置接入web的健康检查rest接口，sidecar将请求该url，用以确定接入应用是否存活.</span></span><br><span class="line"><span class="attr">health-uri:</span> <span class="attr">http://localhost:$&#123;sidecar.port&#125;/openapi/health/status</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="方案二：升级SpringBoot并集成SpringCloud组件"><a href="#方案二：升级SpringBoot并集成SpringCloud组件" class="headerlink" title="方案二：升级SpringBoot并集成SpringCloud组件"></a>方案二：升级SpringBoot并集成SpringCloud组件</h3><h4 id="一、升级SpringBoot-1-x版本"><a href="#一、升级SpringBoot-1-x版本" class="headerlink" title="一、升级SpringBoot 1.x版本"></a>一、升级SpringBoot 1.x版本</h4><p>在不改动Spring版本的情况下引入SrpingBoot，将项目改造为SpringBoot项目<br>SpringBoot 1.x 引用的Spring 4.x版本，而一般SpringMvc项目也是使用Spring4.x版本，如果使用Spring更老版本或未使用spring则另当别论。</p>
+<h4 id="二、升级SpringBoot-2-x版本"><a href="#二、升级SpringBoot-2-x版本" class="headerlink" title="二、升级SpringBoot 2.x版本"></a>二、升级SpringBoot 2.x版本</h4><p>SpringBoot 2.x版本使用的是Spring5.x版本，升级2.x意味着升级spring并且需要解决spring升级带来的问题</p>
+<h4 id="三、引入SpringCloud并集成SpringCloud组件"><a href="#三、引入SpringCloud并集成SpringCloud组件" class="headerlink" title="三、引入SpringCloud并集成SpringCloud组件"></a>三、引入SpringCloud并集成SpringCloud组件</h4><h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><h5 id="集成Eureka时，Cannot-create-Jersey-client错误"><a href="#集成Eureka时，Cannot-create-Jersey-client错误" class="headerlink" title="集成Eureka时，Cannot create Jersey client错误"></a>集成Eureka时，Cannot create Jersey client错误</h5><p>问题原因：jersey 与 fastjson 某些版本冲突导致服务无法启动<br>错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Caused by: com.sun.jersey.spi.inject.Errors$ErrorMessagesException: null</span><br></pre></td></tr></table></figure></p>
+<p>解决方案：fastjson升级到 1.2.37以上版本</p>
+<p><a href="https://github.com/alibaba/fastjson/releases/tag/1.2.37">https://github.com/alibaba/fastjson/releases/tag/1.2.37</a></p>
+<h5 id="日期响应为linux时间戳"><a href="#日期响应为linux时间戳" class="headerlink" title="日期响应为linux时间戳"></a>日期响应为linux时间戳</h5><blockquote>
+<p>升级SpringBoot后，原先的日期格式化失效，在不给字段加@JsonFormat注解的情况下便要思考通过全局配置来解决</p>
+</blockquote>
+<p><strong>正常配置</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring.jackson.time-zone=GMT+8</span><br><span class="line"># 指定响应数据格式</span><br><span class="line">spring.jackson.date-format=yyyy-MM-dd HH:mm:ss</span><br><span class="line"># 指定不返回时间戳</span><br><span class="line">spring.jackson.serialization.write-dates-as-timestamps=false</span><br></pre></td></tr></table></figure></p>
+<p>这样配置后并没有生效，继续查找原因。</p>
+<blockquote>
+<p>Finally, if you opt out of the Spring Boot default MVC configuration by providing your own @EnableWebMvc configuration, you can take control completely and do everything manually by using getMessageConverters from WebMvcConfigurationSupport.<br>  《Spring Boot Reference Guide》</p>
+</blockquote>
+<p>去掉@EnableWebMvc后，配置可以生效。</p>
+<p>结合WebMvcAutoConfiguration理解@EnableWebMvc</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" title="SpringMvc项目接入SpringCloud微服务的解决方案" target="_blank" rel="external">https://challange.github.io/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/springcloud-从零开始玩转SpringCloud（三）：Feign声明式服务调用/" title="从零开始玩转SpringCloud（三）：Feign声明式服务调用"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

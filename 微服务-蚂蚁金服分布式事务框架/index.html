@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>蚂蚁金服分布式事务框架 | 高家祺的博客</title>
+  <meta name="description" content="分布式事务基本术语   术语 描述     事务 事务是指作为单个逻辑工作单元执行的一系列操作，要么完全执行，要么完全不执行。   分布式事务 事务的发起者、资源及资源管理器和事务协调者分别位于不同的分布式系统的不同节点之上。   分支事务 一个分布式事务可能包含多个数据库本地事务，在分布式事务框架下，分支事务可能是一个分库上执行的 SQL 语句，或是一个自定义模式服务的调用。   发起方 分布式">
+<meta name="keywords" content="微服务,分布式事务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="蚂蚁金服分布式事务框架">
+<meta property="og:url" content="https://challange.github.io/微服务-蚂蚁金服分布式事务框架/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="分布式事务基本术语   术语 描述     事务 事务是指作为单个逻辑工作单元执行的一系列操作，要么完全执行，要么完全不执行。   分布式事务 事务的发起者、资源及资源管理器和事务协调者分别位于不同的分布式系统的不同节点之上。   分支事务 一个分布式事务可能包含多个数据库本地事务，在分布式事务框架下，分支事务可能是一个分库上执行的 SQL 语句，或是一个自定义模式服务的调用。   发起方 分布式">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://challange.github.io/images/蚂蚁金服分布式事务框架/1.png">
+<meta property="og:updated_time" content="2019-05-26T05:52:43.750Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="蚂蚁金服分布式事务框架">
+<meta name="twitter:description" content="分布式事务基本术语   术语 描述     事务 事务是指作为单个逻辑工作单元执行的一系列操作，要么完全执行，要么完全不执行。   分布式事务 事务的发起者、资源及资源管理器和事务协调者分别位于不同的分布式系统的不同节点之上。   分支事务 一个分布式事务可能包含多个数据库本地事务，在分布式事务框架下，分支事务可能是一个分库上执行的 SQL 语句，或是一个自定义模式服务的调用。   发起方 分布式">
+<meta name="twitter:image" content="https://challange.github.io/images/蚂蚁金服分布式事务框架/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/微服务-蚂蚁金服分布式事务框架/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-problem">
+          <a href="/problem">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">问题记录</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/程序人生/">程序人生</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/DIY/" style="font-size: 13.25px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13.5px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.5px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/SQL调优/" style="font-size: 13px;">SQL调优</a> <a href="/tags/Scratch/" style="font-size: 13.75px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/分布式事务/" style="font-size: 13px;">分布式事务</a> <a href="/tags/前端/" style="font-size: 13px;">前端</a> <a href="/tags/微服务/" style="font-size: 13.5px;">微服务</a> <a href="/tags/数据库/" style="font-size: 13px;">数据库</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a> <a href="/tags/程序人生/" style="font-size: 13px;">程序人生</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" class="title">SpringMvc项目接入SpringCloud微服务的解决方案</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T08:05:05.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（三）：Feign声明式服务调用/" class="title">从零开始玩转SpringCloud（三）：Feign声明式服务调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T04:00:30.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Git/">Git</a>
+              </p>
+              <p class="item-title">
+                <a href="/Git-GIt操作整理/" class="title">Git操作整理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-微服务-蚂蚁金服分布式事务框架" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      蚂蚁金服分布式事务框架
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/微服务-蚂蚁金服分布式事务框架/" class="article-date">
+	  <time datetime="2019-01-31T08:05:05.000Z" itemprop="datePublished">2019-01-31</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/微服务/">微服务</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/分布式事务/">分布式事务</a>, <a class="article-tag-link" href="/tags/微服务/">微服务</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/微服务-蚂蚁金服分布式事务框架/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3.1k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 10(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h1><h3 id="基本术语"><a href="#基本术语" class="headerlink" title="基本术语"></a>基本术语</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">术语</th>
+<th style="text-align:right">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">事务</td>
+<td style="text-align:right">事务是指作为单个逻辑工作单元执行的一系列操作，要么完全执行，要么完全不执行。</td>
+</tr>
+<tr>
+<td style="text-align:left">分布式事务</td>
+<td style="text-align:right">事务的发起者、资源及资源管理器和事务协调者分别位于不同的分布式系统的不同节点之上。</td>
+</tr>
+<tr>
+<td style="text-align:left">分支事务</td>
+<td style="text-align:right">一个分布式事务可能包含多个数据库本地事务，在分布式事务框架下，分支事务可能是一个分库上执行的 SQL 语句，或是一个自定义模式服务的调用。</td>
+</tr>
+<tr>
+<td style="text-align:left">发起方</td>
+<td style="text-align:right">分布式事务的发起方负责启动分布式事务，通过调用参与者的服务，将参与者纳入到分布式事务当中，并决定整个分布式事务是提交还是回滚。一个分布式事务有且只能有一个发起方。</td>
+</tr>
+<tr>
+<td style="text-align:left">参与者</td>
+<td style="text-align:right">参与者提供分支事务服务。当一个参与者被发起方调用，则被纳入到该发起方启动的分布式事务中，成为该分布式事务的一个分支事务。一个分布式事务可以有多个参与者。</td>
+</tr>
+<tr>
+<td style="text-align:left">事务管理器</td>
+<td style="text-align:right">事务管理器是一个独立的服务，用于协调分布式事务，包括创建主事务记录、分支事务记录，并根据分布式事务的状态，调用参与者提交或回滚方法。</td>
+</tr>
+<tr>
+<td style="text-align:left">主事务记录</td>
+<td style="text-align:right">又叫 Activity 记录，是整个分布式事务的主体。其最核心的数据结构是事务号（TX_ID）和事务状态（STATE），它是在启动分布式事务时持久化写入数据库的，它的状态决定了这个分布式事务的状态。</td>
+</tr>
+<tr>
+<td style="text-align:left">分支事务记录</td>
+<td style="text-align:right">又叫 Action 记录，用于标识分支事务。它记录了该提供该分支事务的参与者的信息，其中包括参与者的唯一标识等。通过分支事务信息，事务管理器就可以对参与者进行提交或者回滚操作。</td>
+</tr>
+<tr>
+<td style="text-align:left">最终一致</td>
+<td style="text-align:right">事务处理过程中，会有短暂不一致的情况，但通过恢复系统，可以让事务的数据达到最终一致的目标。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>分布式事务解决三大核心问题：<strong>跨数据库</strong>、<strong>跨服务</strong>以及<strong>混合分布式事务</strong>。</p>
+<h4 id="跨数据库分布式事务"><a href="#跨数据库分布式事务" class="headerlink" title="跨数据库分布式事务"></a>跨数据库分布式事务</h4><p>当业务规模增大，单库单表无法满足业务需求时，自然就会出现分库分表的情况。但是，单机事务又不能保证分库后的事务属性，分布式事务几乎无法避免。分布式事务可以让应用轻松具备跨库分布式事务处理能力，像使用单机数据库事务一样，透明地使用分布式事务。</p>
+<h4 id="跨服务的分布式事务"><a href="#跨服务的分布式事务" class="headerlink" title="跨服务的分布式事务"></a>跨服务的分布式事务</h4><p>在基于 SOA（Service-Oriented Architecture，面向服务架构）的分布式应用环境下，系统按照功能解耦，拆分成不同的微服务，一项业务往往会涉及多个服务之间的调用。因此，为了保障业务完整，需要保证各调用服务间的数据一致性。分布式事务同样支持跨服务的分布式事务，并且可以很方便的与 SOFABoot、Spring Cloud、Dubbo 等框架打通，实现业务链路级别的分布式事务。</p>
+<h4 id="混合分布式事务"><a href="#混合分布式事务" class="headerlink" title="混合分布式事务"></a>混合分布式事务</h4><p>在一个大规模的分布式应用环境下，除了常见的微服务、数据库资源之外，还会涉及到消息队列、缓存等系统资源的使用。同时，依然需要保证这些资源间访问的数据的一致性。分布式事务支持在同一个分布式事务中引入数据库、服务、消息队列等不同类型的资源，并且支持混合接入模式。</p>
+<h3 id="角色简介"><a href="#角色简介" class="headerlink" title="角色简介"></a>角色简介</h3><p>分布式事务主要涉及三个角色，发起方、参与者与事务管理器，具体描述如下：</p>
+<ul>
+<li>发起方：分布式事务的发起方负责启动分布式事务，通过调用参与者的服务，将参与者纳入到分布式事务当中，并决定整个分布式事务是提交还是回滚。一个分布式事务有且只能有一个发起方。</li>
+<li>参与者：参与者提供分支事务服务。当一个参与者被发起方调用后，该参与者会被纳入到该发起方启动的分布式事务中，成为该分布式事务的一个分支事务。一个分布式事务可以有多个参与者。</li>
+<li>事务管理器：事务管理器是一个独立的服务，用于协调分布式事务，包括创建主事务记录、分支事务记录，并根据分布式事务的状态，调用参与者提交或回滚方法。</li>
+</ul>
+<h3 id="事务执行状态说明"><a href="#事务执行状态说明" class="headerlink" title="事务执行状态说明"></a>事务执行状态说明</h3><p>分布式事务使用两阶段提交协议（Two-Phase Commit Protocol，简称 2PC）来保证事务执行的原子性。2PC 包含两个阶段：</p>
+<p>第一阶段，也称准备阶段。由事务发起者向各参与者发送请求，询问参与者是否准备好执行事务。<br>第二阶段，也称提交阶段。在一阶段所有参与者都确认可以执行事务后，各参与者开始分别执行事务分支。所有分支都成功则事务数据提交成功，否则，所有分支都进行数据回滚操作。<br>事务在某一时间点可能处在以下状态之一：</p>
+<ul>
+<li>初始化：应用发起事务</li>
+<li>进行中<ul>
+<li>准备中：一阶段操作中</li>
+<li>提交中：一阶段结束，正在二阶段的提交操作中</li>
+<li>回滚中：一阶段结束，因为某些业务失败，正在二阶段的回滚操作中</li>
+</ul>
+</li>
+<li>已结束<ul>
+<li>已提交：事务结束，事务执行的数据变更已提交</li>
+<li>已回滚：事务结束，事务执行的数据变更已回滚</li>
+</ul>
+</li>
+<li>异常<ul>
+<li>提交异常：一阶段结束，二阶段处理提交操作时出现异常</li>
+<li>回滚异常：一阶段结束，二阶段处理回滚操作时出现异常</li>
+<li>回查异常：一阶段结束，二阶段处理回查业务接口时出现异常</li>
+</ul>
+</li>
+</ul>
+<h3 id="分布式事务中的二阶段提交是什么？"><a href="#分布式事务中的二阶段提交是什么？" class="headerlink" title="分布式事务中的二阶段提交是什么？"></a>分布式事务中的二阶段提交是什么？</h3><blockquote>
+<p>二阶段提交协议（Two-phase Commit Protocol，简称 2PC）是分布式事务的核心协议。在此协议中，一个事务管理器（Transaction Manager，简称 TM）协调 1 个或多个资源管理器（Resource Manager，简称 RM）的活动，所有资源管理器向事务管理器汇报自身活动状态，由事务管理器根据各资源管理器汇报的状态（完成准备或准备失败）来决定各资源管理器是“提交”事务还是进行“回滚”操作。</p>
+</blockquote>
+<p>二阶段提交的具体流程如下：</p>
+<ol>
+<li>应用程序向事务管理器提交请求，发起分布式事务；</li>
+<li>在第一阶段，事务管理器联络所有资源管理器，通知它们准备提交事务；</li>
+<li>各资源管理器返回完成准备（或准备失败）的消息给事务管理器（响应超时算作失败）；</li>
+<li>在第二阶段：<ul>
+<li>如果所有资源管理器均完成准备（如图 1），则事务管理器会通知所有资源管理器执行事务提交；</li>
+<li>如果任一资源管理器准备失败（如图 2 中的资源管理器 B），则事务管理器会通知所有资源管理器进行事务回滚。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/蚂蚁金服分布式事务框架/1.png" alt="二阶段提交示意图"></p>
+<h3 id="分布式事务中的-TCC-模型"><a href="#分布式事务中的-TCC-模型" class="headerlink" title="分布式事务中的 TCC 模型"></a>分布式事务中的 TCC 模型</h3><p>Try-Confirm-Cancel（TCC）是初步操作（Try）、确认操作（Confirm）和取消操作（Cancel）三种操作的缩写，这三种操作的业务含义如下：</p>
+<ol>
+<li>Try 阶段：对业务系统做检测及资源预留；</li>
+<li>Confirm 阶段：对业务系统做确认提交。默认 Confirm 阶段是不会出错的，只要 Try 成功，Confirm 一定成功；</li>
+<li>Cancel 阶段：当业务执行出现错误，需要回滚的状态下，执行业务取消，释放预留资源。</li>
+</ol>
+<p>TCC 是二阶段提交协议（Two-phase Commit Protocol，简称 2PC）的扩展，Try 操作对应 2PC 中一阶段的准备提交事务（Prepare），Confirm 对应 2PC 中二阶段事务提交（Commit），Cancel 对应 2PC 中二阶段事务回滚（Rollback）。</p>
+<p>与 2PC 不同的是，TCC 是一种编程模型，是应用层的 2PC；TCC 的 3 个操作均由编码实现，通过编码实现了 2PC 资源管理器的功能。</p>
+<p>TCC 自编码的特性决定 TCC 资源管理器可以跨数据库、跨应用实现资源管理，将对不同的数据库访问、不同的业务操作通过编码方式转换一个原子操作，解决了复杂业务场景下的事务问题。同时 TCC 的每一个操作对于数据库来讲都是一个本地数据库事务，操作结束则本地数据库事务结束，数据库的资源也就被释放；这就规避了数据库层面的 2PC 对资源占用导致的性能低下问题。</p>
+<h3 id="柔性事务的定义与分类"><a href="#柔性事务的定义与分类" class="headerlink" title="柔性事务的定义与分类"></a>柔性事务的定义与分类</h3><h4 id="柔性事务的定义"><a href="#柔性事务的定义" class="headerlink" title="柔性事务的定义"></a>柔性事务的定义</h4><p><strong>刚性事务</strong>（如单数据库）完全遵循 ACID 规范，即数据库事务正确执行的四个基本要素：</p>
+<ul>
+<li>原子性（Atomicity）</li>
+<li>一致性（Consistency）</li>
+<li>隔离性（Isolation）</li>
+<li>持久性（Durability）</li>
+</ul>
+<p><strong>柔性事务</strong>（如分布式事务）为了满足可用性、性能与降级服务的需要，降低一致性（Consistency）与隔离性（Isolation）的要求，遵循 BASE 理论：</p>
+<ul>
+<li>基本业务可用性（Basic Availability）</li>
+<li>柔性状态（Soft state）</li>
+<li>最终一致性（Eventual consistency）</li>
+</ul>
+<p>同样的，柔性事务也部分遵循 ACID 规范：<br>原子性：严格遵循<br>一致性：事务完成后的一致性严格遵循；事务中的一致性可适当放宽<br>隔离性：并行事务间不可影响；事务中间结果可见性允许安全放宽<br>持久性：严格遵循</p>
+<h4 id="柔性事务的分类"><a href="#柔性事务的分类" class="headerlink" title="柔性事务的分类"></a>柔性事务的分类</h4><p>柔性事务分为：两阶段型、补偿型、异步确保型、最大努力通知型。</p>
+<ol>
+<li>两阶段型<br>分布式事务二阶段提交，对应技术上的 XA、JTA/JTS，这是分布式环境下事务处理的典型模式。</li>
+<li>补偿型<br>TCC 型事务（Try-Confirm-Cancel）可以归为补偿型。在 Try 成功的情况下，如果事务要回滚，Cancel 将作为一个补偿机制，回滚 Try 操作；TCC 各操作事务本地化，且尽早提交（没有两阶段约束）；当全局事务要求回滚时，通过另一个本地事务实现“补偿”行为。<br>TCC 是将资源层的二阶段提交协议转换到业务层，成为业务模型中的一部分。</li>
+<li>异步确保型<br>将一些有同步冲突的事务操作变为异步操作，避免对数据库事务的争用，如消息事务机制。</li>
+<li>最大努力通知型<br>通过通知服务器（消息通知）进行，允许失败，有补充机制。</li>
+</ol>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ol>
+<li>有没有可能在回滚时已经时过境迁，回滚前该记录已经发生了很多次改变，那么如何应对？<br>在update之前，会先把账户的金额保存下来，执行update操作，然后把执行之后的金额保存下来。因为在二阶段有可能会是回滚操作，回滚的时候如果想把执行之前的数据覆盖回去的话，必须要保证在覆盖的那个时刻，这些行上面的数据没有被别人变更过，所以最后会加一个逻辑行锁，这个就是金融系统的特性需求。</li>
+</ol>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://wwyz-study.oss-cn-hangzhou.aliyuncs.com/XTS%20%E6%94%AF%E4%BB%98%E5%AE%9D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97.pdf">XTS支付宝分布式事务学习指南</a><br><a href="http://wwyz-study.oss-cn-hangzhou.aliyuncs.com/%E5%A4%A7%E8%A7%84%E6%A8%A1SOA%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86_%E7%A8%8B%E7%AB%8B_SD2C2008.pdf">大规模SOA系统中的分布式事务处理_程立_SD2C2008</a><br><a href="https://www.zhihu.com/question/31813039">支付宝运营架构中柔性事务指的是什么？</a><br><a href="http://tech.it168.com/a2018/0523/3204/000003204767.shtml">分布式事务：蚂蚁金服核心金融场景下的演进</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/微服务-蚂蚁金服分布式事务框架/" title="蚂蚁金服分布式事务框架" target="_blank" rel="external">https://challange.github.io/微服务-蚂蚁金服分布式事务框架/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/Java基础-Java字节码分析i-i-的结果/" title="Java字节码分析i=i++的结果"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/数据库-SQL调优的基本公式/" title="SQL调优的基本公式(转)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

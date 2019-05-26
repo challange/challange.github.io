@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>SQL调优的基本公式(转) | 高家祺的博客</title>
+  <meta name="description" content="SQL的优化是DBA日常工作中不可缺少的一部分，记得在学生时期，曾经在ITPUB上看到一篇帖子，当时楼主在介绍SQL优化的时候，用一个公式来讲解他在做sql优化的时候遵循的原则：  T=S/V(T代表时间，S代表路程，V代表速度)  S指SQL所需访问的资源总量，V指SQL单位时间所能访问的资源量，T自然就是SQL执行所需时间了;我们为了获得SQL最快的执行时间，可以根据公式定义上去反推：  在S">
+<meta name="keywords" content="数据库,SQL调优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL调优的基本公式(转)">
+<meta property="og:url" content="https://challange.github.io/数据库-SQL调优的基本公式/index.html">
+<meta property="og:site_name" content="高家祺的博客">
+<meta property="og:description" content="SQL的优化是DBA日常工作中不可缺少的一部分，记得在学生时期，曾经在ITPUB上看到一篇帖子，当时楼主在介绍SQL优化的时候，用一个公式来讲解他在做sql优化的时候遵循的原则：  T=S/V(T代表时间，S代表路程，V代表速度)  S指SQL所需访问的资源总量，V指SQL单位时间所能访问的资源量，T自然就是SQL执行所需时间了;我们为了获得SQL最快的执行时间，可以根据公式定义上去反推：  在S">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-26T05:54:21.366Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQL调优的基本公式(转)">
+<meta name="twitter:description" content="SQL的优化是DBA日常工作中不可缺少的一部分，记得在学生时期，曾经在ITPUB上看到一篇帖子，当时楼主在介绍SQL优化的时候，用一个公式来讲解他在做sql优化的时候遵循的原则：  T=S/V(T代表时间，S代表路程，V代表速度)  S指SQL所需访问的资源总量，V指SQL单位时间所能访问的资源量，T自然就是SQL执行所需时间了;我们为了获得SQL最快的执行时间，可以根据公式定义上去反推：  在S">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://challange.github.io/数据库-SQL调优的基本公式/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="高家祺的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://challange.github.io/" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">高家祺</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">全栈攻城狮</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">资料</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-problem">
+          <a href="/problem">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">问题记录</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/程序人生/">程序人生</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/DIY/" style="font-size: 13.25px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13.5px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.5px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/SQL调优/" style="font-size: 13px;">SQL调优</a> <a href="/tags/Scratch/" style="font-size: 13.75px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/分布式事务/" style="font-size: 13px;">分布式事务</a> <a href="/tags/前端/" style="font-size: 13px;">前端</a> <a href="/tags/微服务/" style="font-size: 13.5px;">微服务</a> <a href="/tags/数据库/" style="font-size: 13px;">数据库</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a> <a href="/tags/程序人生/" style="font-size: 13px;">程序人生</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" class="title">SpringMvc项目接入SpringCloud微服务的解决方案</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T08:05:05.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（三）：Feign声明式服务调用/" class="title">从零开始玩转SpringCloud（三）：Feign声明式服务调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T04:00:30.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Git/">Git</a>
+              </p>
+              <p class="item-title">
+                <a href="/Git-GIt操作整理/" class="title">Git操作整理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/微服务/">微服务</a>
+              </p>
+              <p class="item-title">
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-数据库-SQL调优的基本公式" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL调优的基本公式(转)
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/数据库-SQL调优的基本公式/" class="article-date">
+	  <time datetime="2019-01-29T08:05:05.000Z" itemprop="datePublished">2019-01-29</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/SQL调优/">SQL调优</a>, <a class="article-tag-link" href="/tags/数据库/">数据库</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/数据库-SQL调优的基本公式/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>SQL的优化是DBA日常工作中不可缺少的一部分，记得在学生时期，曾经在ITPUB上看到一篇帖子，当时楼主在介绍SQL优化的时候，用一个公式来讲解他在做sql优化的时候遵循的原则：</p>
+<blockquote>
+<p>T=S/V(T代表时间，S代表路程，V代表速度)</p>
+</blockquote>
+<p>S指SQL所需访问的资源总量，V指SQL单位时间所能访问的资源量，T自然就是SQL执行所需时间了;我们为了获得SQL最快的执行时间，可以根据公式定义上去反推：</p>
+<ol>
+<li>在S不变的情况下，我们可以提升V来降低T：通过适当的索引调整，我们可以将大量的速度较慢的随机IO转换为速度较快的顺序IO；通过提升服务器的内存，使得将更多的数据放到内存中，会比数据放到磁盘上会得到明显的速度提升；采用电子存储介质进行数据存储和读取的SSD，突破了传统机械硬盘的性能瓶颈，使其拥有极高的存储性能;在提升V上我们可以采用较高配置的硬件来完成速度的提升；</li>
+<li>在V不变的情况下，我们可以减小S来降低T：这是SQL优化中非常核心的一个环节，在减小S环节上，DBA可以做的可以有很多，通常可以在查询条件中建立适当的索引，来避免全表扫描；有时候可以改写SQl，添加一些适当的提示符，来改变SQL的执行计划，使SQL以最少的扫描路径完成查询；当这些方法都使用完了之后，你是否还有其他方案来优化喃？在阿里系的DBA职位描述中有条就是要求DBA需要深入的了解业务，当DBA深入的了解业务之后，这个时候能站在业务上，又站DB角度上考虑，这个时候在去做优化，有时候能达到事半功倍的效果。</li>
+</ol>
+<h3 id="案例一：通过降低S，来提升T"><a href="#案例一：通过降低S，来提升T" class="headerlink" title="案例一：通过降低S，来提升T"></a>案例一：通过降低S，来提升T</h3><blockquote>
+<p>原理介绍：<br>我们知道B+索引叶子节点的值是按照索引字段升序的，比如我们对（nick，appkey）两个字段做了索引，那么在索引中的则是按照nick，appkey的升序排列；如果我们现在的一条sql：<br>select count(distinct nick) from xxxx_nickapp_09_29;<br>用于查询统计某天日志表中的UV，优化器选择了该表上索引ind_nick_appkey（nick，appkey）来完成查询，则开始从nick1开始一条条扫描下来，直到扫描到最后一个nick_n,那么中间过程会扫描很多重复的nick（最左边普通扫描），如果我们能够跳过中间重复的nick，则性能会优化非常多（最右边的松散扫描）：</p>
+</blockquote>
+<p>从上面的可以得到一个结论：</p>
+<p>如果这条统计uv的sql能够按照右边的loose index scan的方式来扫描话，会大大的减小我们上面提到的S；所以需要通过改写sql来达到伪loose index scan：（MySql优化器不能直接的对count(distinct column)做优化）</p>
+<p>root@DB 09:41:30&gt;select count(*) from ( select distinct(nick) from xxxx_nickapp_09_29) t ;</p>
+<p>+———-+<br>| count(*) |<br>+———-+<br>| 806934 |<br>+———-+<br>Sql内查询中先选出不同的nick，最后在外面套一层count，就可以得到nick的distinct值总和；<br>最重要的是在子查询中：select distinct(nick) 实现了上图中的伪loose index scan，优化器在这个时候的执行计划为Using index for group-by ，这样mysql就把distinct优化为group by，首先利用索引来分组，然后扫描索引，对需要的nick只扫描一条记录。</p>
+<p>真实案例：</p>
+<p>该案例选自我们的一个线上的生产系统，该系统每天有大量的日志数据入库，单表的容量在10G-50G之间，然后做汇总分析，计算日志数据中的uv就是其中一个逻辑，sql如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> nick) <span class="keyword">from</span> xxxx_nickapp_09_29;</span><br></pre></td></tr></table></figure></p>
+<p>即使在_xxxx分表上加上nick的索引，通过查看执行计划，为全索引扫描，由于单表的数据量过大，sql在执行的时候，会对整个服务器带来抖动，需要对原来的SQL进行改写，使其支持loose index scan；</p>
+<p>优化前：</p>
+<p>root@DB 09:41:30&gt;select count(distinct nick) from xxxx_nickapp_09_29;<br>+———-+<br>| count(*) |<br>+———-+<br>| 806934 |</p>
+<p>1 row in set (52.78 sec)<br>执行一次sql需要花费52.78s</p>
+<p>优化后：</p>
+<p>root@DB 09:41:30&gt;select count(*) from ( select distinct(nick) from xxxx_nickapp_09_29)t ;</p>
+<p>+———-+<br>| count(*) |<br>+———-+<br>| 806934 |<br>+———-+<br>1 row in set (5.81 sec)</p>
+<p>由52.78秒降至5.81秒，速度提升了差不多10倍；</p>
+<p>查看SQL的执行计划：</p>
+<p>优化写法：</p>
+<p>root@DB 09:41:30&gt;explain select count(*) from ( select distinct(nick) from xxxx_nickapp_09_29)t ;<br>| id      |    select_type | table  |type |possible_keys|key|key_len|ref|rows|Extra|<br>| :——– | ——–:| ——–:| ——–:| ——–:| ——–:| ——–:| ——–:| ——–:|:–: |<br>| 1  | SIMPLE |  xxxx_nickapp_09_29  |range|NULL|ind_nick_appkey|67|NULL|2124695|Using index for group-by|<br>原始写法：<br>root@DB 09:41:50&gt;explain select count(distinct nick) from xxxx_nickapp_09_29;<br>| id      |    select_type | table  |type |possible_keys|key|key_len|ref|rows|Extra|<br>| :——– | ——–:| ——–:| ——–:| ——–:| ——–:| ——–:| ——–:| ——–:|:–: |<br>| 1  | SIMPLE |  xxxx_nickapp_09_29  |index|NULL|ind_nick_appkey|177|NULL|19546123|Using index|</p>
+<p>可以看到我们的路程由19546123减小到2124695，减小了9倍多.</p>
+<h3 id="案例二：结合业务递增的写入特点，巧妙优化UV统计count"><a href="#案例二：结合业务递增的写入特点，巧妙优化UV统计count" class="headerlink" title="案例二：结合业务递增的写入特点，巧妙优化UV统计count(*)"></a>案例二：结合业务递增的写入特点，巧妙优化UV统计count(*)</h3><blockquote>
+<p>有时候觉得，优化一条sql的最高境界就是让这sql能够从把这条从系统中拿掉，不管怎样，这些都是建立在你足够的了解业务上，就能够推动一些业务产品的升级或者下线，这样的DBA你能做到吗？</p>
+</blockquote>
+<p>下面看一个案例：<br>应用每天都会对入库的分表统计一个总数：select count(<em>) from xx_01_01;<br>随着单表的数据量越来越大（单表在20G左右），每次进行count的时候，速度越来越慢，同时需要扫描较多的数据页块，导致整个数据库性能的抖动，通过分析业务的特点，由于每张表采用自增id的方式进行插入，并且没有数据的删除，所以统计全表的总数就可以变通一下：<br>所以这条sql：select count(</em>) from xx_01_01;<br>可以变通为： select max(id)-min(id)+1 from xx_01_01;<br>执行速度可以得到质的飞跃.</p>
+<h3 id="案例三：通过提升V，来降低T—随机IO-VS-顺序IO"><a href="#案例三：通过提升V，来降低T—随机IO-VS-顺序IO" class="headerlink" title="案例三：通过提升V，来降低T—随机IO  VS  顺序IO"></a>案例三：通过提升V，来降低T—随机IO  VS  顺序IO</h3><p>真实线上案例：在我们的一个核心产品库上，承载着非常大量的随机读，就叫它读库好了。一天读库的load非常的高，通过慢日志发现，有一条sql频繁的出现在慢日中，这条sql的查询条件很复杂，同时该表上的类似相同的索引也非常的多，当时是怀疑索引走错，通过explain 来查看SQL的执行计划：发现执行计划中的using where代表查询回表了，同时由于回表的记录rows较大，所以带来了大量的随机IO：</p>
+<p>所以我们只需要在原来的索引冗余掉is_detail字段就可以通过覆盖索引的方法优化掉该sql，避免了查询回表而导致的随机io，用顺序io替换了原来的随机io，SQL的执行速度得到极大提升：（下图会去掉is_detail字段的测试）</p>
+<p>总结：SQL优化是很有趣的一件事情，我们在日常工作中可以按照t=s/v的思路来进行优化，也许你第一次运用它的时候有些陌生，但是只要不断的练习，善于总结，你也会发现其中的规律，真是妙哉妙哉。还有一点很重要的是，你的SQL优化不要脱离实际业务，也许你在哪里优化一条sql花了1个小时，但是去和开发同学讨论优化成果的时候，开发同学说这条sql其实可以下线了，那时候真的哭笑不得了 .</p>
+<p>原文：玄惭<a href="http://hidba.org/?p=498">http://hidba.org/?p=498</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://challange.github.io/数据库-SQL调优的基本公式/" title="SQL调优的基本公式(转)" target="_blank" rel="external">https://challange.github.io/数据库-SQL调优的基本公式/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://challange.github.io/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://challange.github.io/" target="_blank"><span class="text-dark">高家祺</span><small class="ml-1x">全栈攻城狮</small></a></h3>
+        <div>大后台，小前端</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/微服务-蚂蚁金服分布式事务框架/" title="蚂蚁金服分布式事务框架"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/程序人生-毕玄：我在阿里的十年技术感悟/" title="毕玄：我在阿里的十年技术感悟(转)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/challange" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 高家祺
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

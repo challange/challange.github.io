@@ -18,19 +18,19 @@
   
   
   <title>Java基础学习——泛型 | 高家祺的博客</title>
-  <meta name="description" content="1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类型。  程序可控性：泛型有限定类型，泛型可以使程序执行时的类型是确定的，避免了程序的不可控性。在泛型引入之前，对于不确定类型需要使用Object，然后类型强转，此处带来的问题，Object含义不清，使代码不易懂，同时类型无界限限定，很可能会想当然使用错误类型。泛型的引入，在开发是对类或者方法的范围做一个限定，使类">
+  <meta name="description" content="范型的用法 类范型，类名后面尖括号指定T或者其他名称，T只是一个代号，实例化时，指定T的具体类型 方法范型，方法名前面用尖括号指定T或者其他名称，方法参数需能推断出T的类型，调用方法时获得范型具体类型 尖括号中的范型T或其他名称只是一个指代，具体类型由实例化或者方法调用时得知 对于static的变量不能用范型  1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类">
 <meta name="keywords" content="DIY,Java基础,泛型">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java基础学习——泛型">
 <meta property="og:url" content="https://challange.github.io/DIY-DIY——泛型/index.html">
 <meta property="og:site_name" content="高家祺的博客">
-<meta property="og:description" content="1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类型。  程序可控性：泛型有限定类型，泛型可以使程序执行时的类型是确定的，避免了程序的不可控性。在泛型引入之前，对于不确定类型需要使用Object，然后类型强转，此处带来的问题，Object含义不清，使代码不易懂，同时类型无界限限定，很可能会想当然使用错误类型。泛型的引入，在开发是对类或者方法的范围做一个限定，使类">
+<meta property="og:description" content="范型的用法 类范型，类名后面尖括号指定T或者其他名称，T只是一个代号，实例化时，指定T的具体类型 方法范型，方法名前面用尖括号指定T或者其他名称，方法参数需能推断出T的类型，调用方法时获得范型具体类型 尖括号中的范型T或其他名称只是一个指代，具体类型由实例化或者方法调用时得知 对于static的变量不能用范型  1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://challange.github.io/images/DIY——泛型/1.png">
-<meta property="og:updated_time" content="2019-05-08T16:13:41.420Z">
+<meta property="og:updated_time" content="2019-05-26T04:04:06.164Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java基础学习——泛型">
-<meta name="twitter:description" content="1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类型。  程序可控性：泛型有限定类型，泛型可以使程序执行时的类型是确定的，避免了程序的不可控性。在泛型引入之前，对于不确定类型需要使用Object，然后类型强转，此处带来的问题，Object含义不清，使代码不易懂，同时类型无界限限定，很可能会想当然使用错误类型。泛型的引入，在开发是对类或者方法的范围做一个限定，使类">
+<meta name="twitter:description" content="范型的用法 类范型，类名后面尖括号指定T或者其他名称，T只是一个代号，实例化时，指定T的具体类型 方法范型，方法名前面用尖括号指定T或者其他名称，方法参数需能推断出T的类型，调用方法时获得范型具体类型 尖括号中的范型T或其他名称只是一个指代，具体类型由实例化或者方法调用时得知 对于static的变量不能用范型  1. Java如果没有泛型会有什么灾难？泛型是参数化类型，在使用时告诉编辑器使用什么类">
 <meta name="twitter:image" content="https://challange.github.io/images/DIY——泛型/1.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://challange.github.io/DIY-DIY——泛型/index.html">
@@ -201,7 +201,7 @@
   <div class="widget">
     <h3 class="widget-title">分类</h3>
     <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Scratch/">Scratch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/程序人生/">程序人生</a><span class="category-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -211,7 +211,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/DIY/" style="font-size: 13.33px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Gateway/" style="font-size: 13.67px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.33px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/Scratch/" style="font-size: 13.67px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/微服务/" style="font-size: 13px;">微服务</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a>
+      <a href="/tags/DIY/" style="font-size: 13.25px;">DIY</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13.5px;">Gateway</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java基础/" style="font-size: 13.5px;">Java基础</a> <a href="/tags/Lambda表达式/" style="font-size: 13px;">Lambda表达式</a> <a href="/tags/SQL调优/" style="font-size: 13px;">SQL调优</a> <a href="/tags/Scratch/" style="font-size: 13.75px;">Scratch</a> <a href="/tags/SpringCloud/" style="font-size: 14px;">SpringCloud</a> <a href="/tags/分布式事务/" style="font-size: 13px;">分布式事务</a> <a href="/tags/前端/" style="font-size: 13px;">前端</a> <a href="/tags/微服务/" style="font-size: 13.5px;">微服务</a> <a href="/tags/数据库/" style="font-size: 13px;">数据库</a> <a href="/tags/泛型/" style="font-size: 13px;">泛型</a> <a href="/tags/程序人生/" style="font-size: 13px;">程序人生</a>
     </div>
   </div>
 
@@ -220,7 +220,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -239,7 +239,37 @@
                 <a class="category-link" href="/categories/微服务/">微服务</a>
               </p>
               <p class="item-title">
-                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
+                <a href="/微服务-SpringMvc项目接入SpringCloud微服务的解决方案/" class="title">SpringMvc项目接入SpringCloud微服务的解决方案</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T08:05:05.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
+              </p>
+              <p class="item-title">
+                <a href="/springcloud-从零开始玩转SpringCloud（三）：Feign声明式服务调用/" class="title">从零开始玩转SpringCloud（三）：Feign声明式服务调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-26T04:00:30.000Z" itemprop="datePublished">2019-05-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
               </p>
               <p class="item-date">
                 <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
@@ -266,43 +296,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                <a class="category-link" href="/categories/Java基础/">Java基础</a>
+                <a class="category-link" href="/categories/微服务/">微服务</a>
               </p>
               <p class="item-title">
-                <a href="/DIY-DIY——泛型/" class="title">Java基础学习——泛型</a>
+                <a href="/微服务-云原生时代下的12-Factor应用原则/" class="title">云原生时代下的12-Factor应用原则</a>
               </p>
               <p class="item-date">
                 <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/Java基础/">Java基础</a>
-              </p>
-              <p class="item-title">
-                <a href="/DIY-DIY——Lambda表达式/" class="title">Java基础学习——Lambda表达式</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2019-05-06T08:05:05.000Z" itemprop="datePublished">2019-05-06</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/SpringCloud/">SpringCloud</a>
-              </p>
-              <p class="item-title">
-                <a href="/springcloud-SpringCloud——Gateway跨域配置/" class="title">SpringCloud——Gateway跨域配置</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2019-05-05T08:05:05.000Z" itemprop="datePublished">2019-05-05</time>
               </p>
             </div>
           </li>
@@ -357,7 +357,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/DIY-DIY——泛型/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.1k(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.2k(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 4(分)</span>
@@ -367,7 +367,13 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h3 id="1-Java如果没有泛型会有什么灾难？"><a href="#1-Java如果没有泛型会有什么灾难？" class="headerlink" title="1. Java如果没有泛型会有什么灾难？"></a>1. Java如果没有泛型会有什么灾难？</h3><p>泛型是参数化类型，在使用时告诉编辑器使用什么类型。</p>
+        <h3 id="范型的用法"><a href="#范型的用法" class="headerlink" title="范型的用法"></a>范型的用法</h3><ol>
+<li>类范型，类名后面尖括号指定T或者其他名称，T只是一个代号，实例化时，指定T的具体类型</li>
+<li>方法范型，方法名前面用尖括号指定T或者其他名称，方法参数需能推断出T的类型，调用方法时获得范型具体类型</li>
+<li>尖括号中的范型T或其他名称只是一个指代，具体类型由实例化或者方法调用时得知</li>
+<li>对于static的变量不能用范型</li>
+</ol>
+<h3 id="1-Java如果没有泛型会有什么灾难？"><a href="#1-Java如果没有泛型会有什么灾难？" class="headerlink" title="1. Java如果没有泛型会有什么灾难？"></a>1. Java如果没有泛型会有什么灾难？</h3><p>泛型是参数化类型，在使用时告诉编辑器使用什么类型。</p>
 <ol>
 <li><p>程序可控性：泛型有限定类型，泛型可以使程序执行时的类型是确定的，避免了程序的不可控性。在泛型引入之前，对于不确定类型需要使用Object，然后类型强转，此处带来的问题，Object含义不清，使代码不易懂，同时类型无界限限定，很可能会想当然使用错误类型。泛型的引入，在开发是对类或者方法的范围做一个限定，使类和方法运行在有限的类型中，<strong>使程序更清晰，可控性更强</strong><br><img src="/images/DIY——泛型/1.png" alt="Alt text"></p>
 <blockquote>
@@ -441,12 +447,12 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/Git-GIt操作整理/" title="Git操作整理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+      <a href="/微服务-云原生时代下的12-Factor应用原则/" title="云原生时代下的12-Factor应用原则"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/DIY-DIY——Lambda表达式/" title="Java基础学习——Lambda表达式"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/springcloud-SpringCloud——Gateway跨域配置/" title="SpringCloud——Gateway跨域配置"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
